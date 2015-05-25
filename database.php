@@ -1,13 +1,15 @@
 <?php
     class Team {
-        var $id, $division, $divisionString, $solved, $score;
+        var $id, $division, $divisionString, $name, $members, $log, $score;
         
         function __construct($id) {
             $data = get_mysql()->query("select * from teams where id = $id")->fetch_assoc();
             $this->id = $data["id"];
             $this->division = $data["division"];
             $this->divisionString = $this->division == 0 ? "Demo" : ($this->division == 1 ? "Intermediate" : ($this->division == 2 ? "Advanced" : "null"));
-            $this->solved = $data["solved"];
+            $this->name = $data["name"];
+            $this->members = $data["members"];
+            $this->log = $data["log"];
             $this->score = $data["score"];
         }
         
@@ -16,50 +18,28 @@
             $this->score += $i;
         }
         
-        function set_solved($problem, $uuid) {
-            $output = "$problem:" . date("h-i-s") . ":$uuid;";
-            $this->solved .= $output;
-            get_mysql()->query("update teams set solved = '" . $this->solved . "'");
-        }
-        
-        function is_solved($problem) {
-            $s = explode(";", $this->solved);
-            unset($s[sizeof($s) - 1]);
-            
-            for ($i = 0; $i < sizeof($s); $i++) {
-                $s[$i] = substr($s[$i], 0, strpos($s[$i], ":"));
-                
-                if ($s[$i] == $problem) {
-                    return true;
-                }
-            }
-            
-            return false;
+        function log($problem, $uuid, $result) {
+            $output = "$problem:" . date("h-i-s") . ":$uuid:$result;";
+            $this->log .= $output;
+            get_mysql()->query("update teams set log = '" . $this->log . "'");
         }
         
         function problems_solved() {
-            $s = explode(";", $this->solved);
-            
+            $s = explode(";", $this->log);
+            $result = array();
+
+            $index = 0;
             for ($i = 0; $i < sizeof($s) - 1; $i++) {
-                $s[$i] = substr($s[$i], 0, strpos($s[$i], ":"));
-            }
-            
-            unset($s[sizeof($s) - 1]);
-            
-            return $s;
-        }
-        
-        function problems_remaining() {
-            $r = Problem::all_formatted($this);
-            $s = $this->problems_solved();
-            
-            for ($i = sizeof($r) - 1; $i >= 0; $i--) {
-                if (in_array(strval($r[$i]->id), $s)) {
-                    unset($r[$i]);
+                if (explode(":", $s[$i])[3] == "100") {
+                    $result[$index++] = substr($s[$i], 0, strpos($s[$i], ":"));
                 }
             }
-            
-            return $r;
+
+            return $result;
+        }
+
+        function is_solved($problem) {
+            return in_array($problem, $this->problems_solved());
         }
         
         function problems_total() {

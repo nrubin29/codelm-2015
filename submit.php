@@ -46,9 +46,14 @@
     else if (sizeof($output) < sizeof($problem->correct)) {
         $result = "toofew";
     }
-    
+
+    session_start();
+    $team = new Team($_SESSION["team"]);
+
     if ($result != "success") {
         echo($result);
+        $team->log($problem->id, $name, $result);
+        $team->change_points(-1);
         return;
     }
     
@@ -62,18 +67,9 @@
     
     $percent /= sizeof($problem->correct);
     $percent *= 100;
-    
-    session_start();
-    $team = new Team($_SESSION["team"]);
-    
-    if ($percent == 100) {
-        $team->set_solved($problem->id, $name);
-        $team->change_points(2);
-    }
-    
-    else {
-      $team->change_points(-1);
-    }
+
+    $team->log($problem->id, $name, $percent);
+    $team->change_points(($percent == 100) ? 2 : -1);
     
     echo($percent);
     
