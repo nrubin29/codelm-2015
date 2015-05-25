@@ -1,4 +1,11 @@
 <?php
+    define("canSubmit", true);
+
+    if (!canSubmit) {
+        echo("closed");
+        return;
+    }
+
     require_once("database.php");
     $problem = Problem::$all[strval($_POST["problem"])];
 
@@ -100,3 +107,4 @@
       echo($result);
     }
     */
+?>

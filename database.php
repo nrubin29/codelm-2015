@@ -70,12 +70,11 @@
     }
     
     class Problem {
-        var $id, $num, $division, $name, $question, $sample, $stub, $template, $correct;
+        var $id, $num, $divisions, $name, $question, $sample, $stub, $template, $correct;
 
-        function __construct($id, $num, $division, $name, $question, $sample, $stub, $template, $correct) {
+        function __construct($id, $divisions, $name, $question, $sample, $stub, $template, $correct) {
             $this->id = $id;
-            $this->num = $num;
-            $this->division = $division;
+            $this->divisions = $divisions;
             $this->name = $name;
             $this->question = $question;
             $this->sample = $sample;
@@ -91,8 +90,7 @@
                 self::$all = array(
                     "1" => new Problem(
                         /* id */        1,
-                        /* num */       1,
-                        /* division */  0,
+                        /* divisions */ array(0),
                         /* name */      "How do you do?",
                         /* question */  "Given parameter <code>name</code> of type <code>String</code>, return a nice greeting in the format <i>Hello, {name}!</i>",
                         /* sample */    array("Noah" => "Hello, Noah!", "Dog" => "Hello, Dog!"),
@@ -104,8 +102,7 @@
                     ),
                     "2" => new Problem(
                         /* id */        2,
-                        /* num */       2,
-                        /* division */  0,
+                        /* divisions */ array(0),
                         /* name */      "Even or odd?",
                         /* question */  "Given parameter <code>i</code> of type <code>int</code>, return <code>true</code> if the number is even and <code>false</code> if it is odd.",
                         /* sample */    array("0" => "<code>true</code>", "1" => "<code>false</code>", "2" => "<code>true</code>"),
@@ -123,10 +120,9 @@
             $array = array();
             
             foreach (Problem::$all as $id => $problem) {
-                if ($problem->division == $team->division) {
+                if (in_array($team->division, $problem->divisions)) {
                     $array[$id] = array(
                         "id" => $problem->id,
-                        "num" => $problem->num,
                         "name" => $problem->name,
                         "question" => $problem->question,
                         "sample" => $problem->sample,

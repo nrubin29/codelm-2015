@@ -244,7 +244,7 @@
                         $("li").removeClass("active");
                         $(this).addClass("active");
                         
-                        $("#title").html(data[this.id]["name"] + " <small>Problem " + data[this.id]["num"] + "</small>");
+                        $("#title").html(data[this.id]["name"] + " <small>Problem " + data[this.id]["id"] + "</small>");
                         $("#question").html(data[this.id]["question"]);
                         $("#problem").val(data[this.id]["id"]);
                         
@@ -280,8 +280,13 @@
             
                         $.post("/codelm/submit.php", $("#submit").serialize(), function(ret) {
                             var deltaPoints = -1;
-                            
-                            if (ret == "compilation") {
+
+                            if (ret == "closed") {
+                                $("#alertText").html('<span style="color: red;">The competition is over. You may no longer submit answers.</span>');
+                                deltaPoints = 0;
+                            }
+
+                            else if (ret == "compilation") {
                                 $("#alertText").html('<span style="color: red;">Your answer did not compile. Please ensure it is valid code and runs without compilation errors.</span>');
                                 deltaPoints = 0;
                             }
@@ -340,6 +345,10 @@
                             $("#countdown").text(time.toString() + " remaining");
                         }
                     }, end, countdown.DEFAULTS);
+
+                    window.onbeforeunload = function() {
+                        return "Your progress will be saved, but any code you have written will be deleted.";
+                    };
                 <?php } ?>
             });
         </script>
