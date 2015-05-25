@@ -87,20 +87,20 @@
             <div class="container">
               <div class="col-lg-12">
                 <div class="page-header">
-                    <h1>CodeLM 2015 <small>Please enter your team number to log in.</small></h1>
+                    <h1>CodeLM 2015 <small>Please enter your team password to log in.</small></h1>
                 </div>
                 <div class="col-lg-6 center">
                     <div class="row">
                     <div class="col-lg-12">
                       <div id="alert" class="alert alert-danger" role="alert">
-                        <p>The team number you have entered is invalid.</p>
+                        <p>The team password you have entered is incorrect.</p>
                       </div>
                     </div>
                   </div>
                   
                   <form id="form">
                     <div class="form-group">
-                      <input type="text" name="team" class="form-control input-lg">
+                      <input type="password" name="password" class="form-control input-lg">
                     </div>
                     <div class="form-group">
                       <input type="submit" value="Log In" class="btn btn-primary btn-lg center-block">
@@ -111,7 +111,7 @@
             </div>
         <?php } else { ?>
             <div class="navmenu navmenu-default navmenu-fixed-left" id="nav">
-                <a href="#" data-toggle="offcanvas" data-target="#nav" data-canvas="body" onclick="javascript:showModal();" class="navmenu-brand" style="margin-bottom: -10px;"><span style="color: gray;">Code</span><span style="color: rgb(128, 0, 0);">LM</span> <span style="color: gray;">2015</span><span class="badge pull-right"><span style="margin-top: -2px;" class="glyphicon glyphicon-question-sign"></span></span></a>
+                <a href="#" data-toggle="offcanvas" data-target="#nav" data-canvas="body" onclick="showModal();" class="navmenu-brand" style="margin-bottom: -10px;"><span style="color: gray;">Code</span><span style="color: rgb(128, 0, 0);">LM</span> <span style="color: gray;">2015</span><span class="badge pull-right"><span style="margin-top: -2px;" class="glyphicon glyphicon-question-sign"></span></span></a>
                 <hr>
                 <ul class="nav navmenu-nav">
                     <?php Problem::setup(); foreach (Problem::$all as $problem) { ?>
@@ -220,12 +220,12 @@
                         $("#alert").fadeOut();
             
                         $.post("login.php", $("#form").serialize(), function(data) {
-                            if (data == "true") {
+                            if (data) {
                                 location.reload();
                             }
                             
                             else {
-                                $("#alert").fadeIn();
+                                $("#alert").fadeIn().delay(5 * 1000).fadeOut();
                             }
                         });
                     });

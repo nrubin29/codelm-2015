@@ -1,13 +1,12 @@
 <?php
     require_once("database.php");
     session_start();
-    
-    if (Team::exists($_POST["team"])) {
-        $_SESSION["team"] = $_POST["team"];
-        echo("true");
+
+    $team = Team::login($_POST["password"]);
+
+    if ($team != -1) {
+        $_SESSION["team"] = $team;
     }
-    
-    else {
-        echo("false");
-    }
+
+    echo($team != -1);
 ?>

@@ -12,7 +12,7 @@
             $this->log = $data["log"];
             $this->score = $data["score"];
         }
-        
+
         function change_points($i) {
             get_mysql()->query("update teams set score = score + $i");
             $this->score += $i;
@@ -45,9 +45,17 @@
         function problems_total() {
             return sizeof(Problem::all_formatted($this));
         }
-        
-        static function exists($id) {
-            return get_mysql()->query("select count(*) from teams where id = $id")->fetch_assoc()["count(*)"] > 0;
+
+        public static function login($password) {
+            $result = get_mysql()->query("select id from teams where password = '$password'");
+
+            if ($result->num_rows > 0) {
+                return $result->fetch_assoc()["id"];
+            }
+
+            else {
+                return -1;
+            }
         }
         
         static function get_teams($division) {
@@ -63,8 +71,7 @@
     
     class Problem {
         var $id, $num, $division, $name, $question, $sample, $stub, $template, $correct;
-        public static $all;
-        
+
         function __construct($id, $num, $division, $name, $question, $sample, $stub, $template, $correct) {
             $this->id = $id;
             $this->num = $num;
@@ -76,6 +83,8 @@
             $this->template = $template;
             $this->correct = $correct;
         }
+
+        public static $all;
         
         static function setup() {
             if (!isset(self::$all)) {
