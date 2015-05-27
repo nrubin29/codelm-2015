@@ -8,5 +8,5 @@
         $_SESSION["team"] = $team;
     }
 
-    echo($team != -1);
+    echo($team);
 ?>

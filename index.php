@@ -87,7 +87,7 @@
             <div class="container">
               <div class="col-lg-12">
                 <div class="page-header">
-                    <h1>CodeLM 2015 <small>Please enter your team password to log in.</small></h1>
+                    <h1><span style="color: gray;">Code</span><span style="color: rgb(128, 0, 0);">LM</span> <span style="color: gray;">2015</span> <small>Please enter your team password to log in.</small></h1>
                 </div>
                 <div class="col-lg-6 center">
                     <div class="row">
@@ -114,8 +114,8 @@
                 <a href="#" data-toggle="offcanvas" data-target="#nav" data-canvas="body" onclick="showModal();" class="navmenu-brand" style="margin-bottom: -10px;"><span style="color: gray;">Code</span><span style="color: rgb(128, 0, 0);">LM</span> <span style="color: gray;">2015</span><span class="badge pull-right"><span style="margin-top: -2px;" class="glyphicon glyphicon-question-sign"></span></span></a>
                 <hr>
                 <ul class="nav navmenu-nav">
-                    <?php Problem::setup(); foreach (Problem::$all as $problem) { ?>
-                        <li id="<?php echo $problem->id; ?>"><a href="#" data-toggle="offcanvas" data-target="#nav" data-canvas="body"><?php echo $problem->id; ?>. <?php echo $problem->name; ?> <span class="badge pull-right"><span id="b<?php echo $problem->id; ?>" style="margin-top: -2px;" class="glyphicon glyphicon-<?php echo $team->is_solved($problem->id) ? "ok" : "certificate"; ?>"></span></span></a></li>
+                    <?php Problem::setup(); foreach (Problem::all_formatted($team) as $problem) { ?>
+                        <li id="<?php echo $problem["id"] ?>"><a href="#" data-toggle="offcanvas" data-target="#nav" data-canvas="body"><?php echo $problem["id"] ?>. <?php echo $problem["name"] ?> <span class="badge pull-right"><span id="b<?php echo $problem["id"] ?>" style="margin-top: -2px;" class="glyphicon glyphicon-<?php echo $team->is_solved($problem["id"]) ? "ok" : "certificate"; ?>"></span></span></a></li>
                     <?php } ?>
                 </ul>
             </div>
@@ -157,7 +157,6 @@
                             </tbody>
                         </table>
                     </div>
-                            
                     <div class="col-lg-12">
                         <form method="post" action="/codelm/submit.php" id="submit">
                             <div class="form-group">
@@ -220,7 +219,7 @@
                         $("#alert").fadeOut();
             
                         $.post("login.php", $("#form").serialize(), function(data) {
-                            if (data) {
+                            if (data != -1) {
                                 location.reload();
                             }
                             
@@ -261,6 +260,7 @@
                         }
                         
                         codeMirror.getDoc().setValue(codes[this.id] == null ? data[this.id]["stub"] : codes[this.id]);
+
                         $("#tablebody").html("");
                         
                         $.each(data[this.id]["sample"], function(key, value) {

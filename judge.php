@@ -17,7 +17,7 @@
 
         <div class="container">
             <div class="page-header">
-                <h1>CodeLM 2015 Judging Dashboard</h1>
+                <h1><span style="color: gray;">Code</span><span style="color: rgb(128, 0, 0);">LM</span> <span style="color: gray;">2015</span> Judging Dashboard <small>For official use only.</small></h1>
             </div>
 
             <!-- Selection -->
