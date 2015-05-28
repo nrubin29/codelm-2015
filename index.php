@@ -111,13 +111,15 @@
             </div>
         <?php } else { ?>
             <div class="navmenu navmenu-default navmenu-fixed-left" id="nav">
-                <a href="#" data-toggle="offcanvas" data-target="#nav" data-canvas="body" onclick="showModal();" class="navmenu-brand" style="margin-bottom: -10px;"><span style="color: gray;">Code</span><span style="color: rgb(128, 0, 0);">LM</span> <span style="color: gray;">2015</span><span class="badge pull-right"><span style="margin-top: -2px;" class="glyphicon glyphicon-question-sign"></span></span></a>
+                <p class="navmenu-brand" style="margin-bottom: -10px; cursor: hand;"><span style="color: gray;">Code</span><span style="color: rgb(128, 0, 0);">LM</span> <span style="color: gray;">2015</span></p>
                 <hr>
                 <ul class="nav navmenu-nav">
                     <?php Problem::setup(); foreach (Problem::all_formatted($team) as $problem) { ?>
                         <li id="<?php echo $problem["id"] ?>"><a href="#" data-toggle="offcanvas" data-target="#nav" data-canvas="body"><?php echo $problem["id"] ?>. <?php echo $problem["name"] ?> <span class="badge pull-right"><span id="b<?php echo $problem["id"] ?>" style="margin-top: -2px;" class="glyphicon glyphicon-<?php echo $team->is_solved($problem["id"]) ? "ok" : "certificate"; ?>"></span></span></a></li>
                     <?php } ?>
                 </ul>
+                <hr>
+                <a href="http://docs.oracle.com/javase/7/docs/api/" target="_blank" class="navmenu-brand" style="margin-top: -10px; font-size: 14px;">Open JavaDocs</a>
             </div>
             <div class="canvas">
                 <div class="navbar navbar-default navbar-fixed-top">
@@ -136,6 +138,9 @@
                         
                     <div class="col-lg-12">
                         <div class="alert alert-info" id="alert">
+                            <button type="button" class="close" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                             <p id="alertText"></p>
                         </div>
                     </div>
@@ -169,6 +174,7 @@
                         </form>
                     </div>
                 </div>
+                <br><br><br><br>
                 <footer class="footer">
                     <div class="container">
                         <div class="col-lg-12">
@@ -177,22 +183,6 @@
                         </div>
                     </div>
                 </footer>
-            </div>
-            
-            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h4 class="modal-title">CodeLM 2015</h4>
-                  </div>
-                  <div class="modal-body">
-                    <p>Thanks for competing in CodeLM 2015! The only applications that may be open on your computer are Eclipse and your web browser. The only websites that may be opened are the dashboard and Java's <a href="http://docs.oracle.com/javase/7/docs/api/" target="_blank">JavaDocs</a>. Ask a judge if you have any questions.</p>
-                  </div>
-                  <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" data-dismiss="modal" value="Dismiss">
-                  </div>
-                </div>
-              </div>
             </div>
         <?php } ?>
 
@@ -203,12 +193,6 @@
         <script src="/codelm/js/clike.js"></script>
         <script src="//raw.githubusercontent.com/mckamey/countdownjs/master/countdown.min.js"></script>
         <script>
-            function showModal() {
-                setTimeout(function() {
-                    $("#modal").modal();
-                }, 200);
-            }
-        
             $(document).ready(function() {
                 <?php if (!isset($team)) { ?>
                     $("#alert").hide();
@@ -275,6 +259,7 @@
                     $("#submit").submit(function(event) {
                         event.preventDefault();
             
+                        $("#submitButton").prop("disabled", true);
                         $("#alertText").text("Submitting...");
                         $("#alert").fadeIn();
             
@@ -304,17 +289,16 @@
                             }
                             
                             else if (ret == "toomuch") {
-                                $("#alertText").html('<span style="color: red;">Your answer gave too many outputs. Please ensure that you have no print statements.</span>');
+                                $("#alertText").html('<span style="color: red;">Your answer gave too many outputs. Please ensure that you have no extraneous print statements.</span>');
                             }
                             
                             else if (ret == "toofew") {
-                                $("#alertText").html('<span style="color: red;">Your answer did not give enough outputs. This is probably an error; please tell a judge.</span>');
+                                $("#alertText").html('<span style="color: red;">Your answer did not give enough outputs. This is probably an error unless you are doing problem 1. If you are not, tell a judge.</span>');
                             }
                           
                             else {
                                 $("#alertText").text("You were correct for " + ret + "% of tests.");
-                                $("#alert").delay(5 * 1000).fadeOut();
-                                
+
                                 if (ret == 100) {
                                     deltaPoints = 2;
                                     solved++;
@@ -328,8 +312,12 @@
                             
                             if (deltaPoints == 2) {
                                 data[currentID]["solved"] = true;
-                                $("#submitButton").prop("disabled", true).val("Solved");
+                                $("#submitButton").val("Solved");
                                 $("#b" + currentID).removeClass("glyphicon-certificate").addClass("glyphicon-ok");
+                            }
+                            
+                            else {
+                                $("#submitButton").prop("disabled", false);
                             }
                         });
                     });

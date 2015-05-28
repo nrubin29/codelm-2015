@@ -7,7 +7,9 @@
     }
 
     require_once("database.php");
+    session_start();
     $problem = Problem::$all[strval($_POST["problem"])];
+    $team = new Team($_SESSION["team"]);
 
     $name = md5(rand());
     while (is_numeric(substr($name, 0, 1))) {
@@ -15,8 +17,8 @@
     }
 
     $path = "submissions/$name.java";
-    $file = fopen($path, "w");
-    fwrite($file, str_replace("%name%", $name, str_replace("%code%", $_POST["code"], $problem->template)));
+    $file = fopen($path, "w"); // If there's an error, mkdir submissions and chmod it to 077.
+    fwrite($file, str_replace("%special%", $problem->special, str_replace("%tests%", $problem->tests, str_replace("%name%", $name, str_replace("%code%", $_POST["code"], "import java.util.concurrent.ExecutionException;import java.util.concurrent.ExecutorService;import java.util.concurrent.Executors;import java.util.concurrent.Future;import java.util.concurrent.TimeUnit;import java.util.concurrent.TimeoutException;import java.util.Arrays;import java.util.ArrayList;import java.util.List;public class %name%{%special%public static void main(String[]args){ExecutorService executor=Executors.newFixedThreadPool(4);Future<?>future=executor.submit(new Runnable(){@Override public void run(){%tests%}});executor.shutdown();try{future.get(10,TimeUnit.SECONDS);}catch(TimeoutException e){future.cancel(true);System.exit(2);}catch(ExecutionException e){future.cancel(true);System.exit(1);}catch(Exception e){future.cancel(true);System.exit(3);}}%code%}")))));
     fclose($file);
 
     $ignore = array();
@@ -24,6 +26,7 @@
     exec("cd submissions && javac $name.java", $ignore, $ret);
     if ($ret != null && $ret != 0) {
       echo("compilation");
+      $team->log($problem->id, $name, "compilation");
       return;
     }
     
@@ -54,9 +57,6 @@
         $result = "toofew";
     }
 
-    session_start();
-    $team = new Team($_SESSION["team"]);
-
     if ($result != "success") {
         echo($result);
         $team->log($problem->id, $name, $result);
@@ -74,6 +74,7 @@
     
     $percent /= sizeof($problem->correct);
     $percent *= 100;
+    $percent = round($percent, 2);
 
     $team->log($problem->id, $name, $percent);
     $team->change_points(($percent == 100) ? 2 : -1);

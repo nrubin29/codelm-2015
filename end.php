@@ -28,9 +28,10 @@
                 <p>Big thanks to everyone who completed. This year was a small test run for CodeLM. Next year we hope to invite other schools and make this a big event. Please have each person on your team fill out the feedback form. Your feedback is vital to the future of CodeLM. See you next year!</p>
 
                 <ul class="list-group">
-                    <li class="list-group-item"><a href="#">Take Feedback Survey</a></li>
-                    <li class="list-group-item"><a href="#">Download Questions</a></li>
-                    <li class="list-group-item"><a href="judge.php">See Judging Panel</a></li>
+                    <li class="list-group-item"><a href="//docs.google.com/forms/d/1_jx45T2cac1drx_mn-nk7sjgYVZGfRsQKkpzn6aJKw0/viewform?usp=send_form" target="_blank">Take Feedback Survey</a></li>
+                    <li class="list-group-item"><a href="files/CodeLM2015Questions.pdf" target="_blank">Download Questions</a></li>
+                    <li class="list-group-item"><a href="judge.php" target="_blank">See Judging Panel</a></li>
+                    <li class="list-group-item"><a href="//github.com/nrubin29/codelm" target="_blank">View Dashboard Source Code on GitHub</a></li>
                 </ul>
             </div>
         </div>
