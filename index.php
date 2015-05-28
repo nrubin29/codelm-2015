@@ -138,7 +138,7 @@
                         
                     <div class="col-lg-12">
                         <div class="alert alert-info" id="alert">
-                            <button type="button" class="close" aria-label="Close">
+                            <button type="button" id="alertButton" class="close" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             <p id="alertText"></p>
@@ -320,6 +320,10 @@
                                 $("#submitButton").prop("disabled", false);
                             }
                         });
+                    });
+
+                    $("#alertButton").click(function() {
+                        $("#alert").fadeOut();
                     });
                     
                     var end = new Date(2015, 4, 28, 10, 30);
